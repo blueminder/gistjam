@@ -1,1 +1,12 @@
-<%= "#{options.app_name}" %>
+<h1><%= "#{options.app_name}" %></h1>
+<hr>
+<% if authenticated? %>
+  <h2>
+    Welcome <%= github_user.name %>! <br />
+    <img src='https://gravatar.com/avatar/<%= env['warden'].user.gravatar_id %>.png?r=PG&s=50' />
+  </h2>
+<% else %>
+  <h2>
+    Please <a href="/login">login with GitHub</a>.
+  </h2>
+<% end %>
