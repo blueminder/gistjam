@@ -1,8 +1,5 @@
 require 'bundler/setup'
-Bundler.require(:default)
-require File.dirname(__FILE__) + "/app.rb"
+require File.dirname(__FILE__) + "/gist_jam.rb"
 
 use Rack::SSL if ENV['RAILS_ENV'] == "production"
-run GistJam
-
-__END__
+run GistJam.app
