@@ -13,31 +13,28 @@
   </head>
   <body>
     <h1>GistJam</h1>
-      <div style="float: left; width: 800px;">
-        <img src='<%= @gist['user']['avatar_url'] %>' width="50" />
-        <b><%= @gist['user']['login'] %></b> - <%= @gist['description'] %> <br />
-	current: <a href="/gists/<%= @gist['id'] %>"> <%= @gist['id'] %></a><br />
-	<% if @gist['fork_of'] %>
-	  parent: <a href="/gists/<%= @gist['fork_of']['id'] %>"><%= @gist['fork_of']['id'] %></a>
-	<% end %>
-      <% for f in [ @gist['files'] ].flatten(1) %>
-        <% base_content = f.first[1]['content'] %>
-        <pre id="gist"><%= base_content %></pre> <br />
-        <div id="midi"></div>
-        <div id="sheet"></div>
-      <% end %>
-      </div>
-      <div style="float: right; width: 800px;">
-        <% for u in @gist['forks'] %>
-          <img src="<%= u['user']['avatar_url'] %>" width="50" />
-          <b><%= u['user']['login'] %></b><br />
-	  <% current_fork = github_user.api.gist("#{u['id']}") %>
-          current: <a href="/gists/<%= current_fork['id'] %>"> <%= current_fork['id'] %></a><br />
-          parent: <a href="<%= current_fork['fork_of']['html_url'] %>"><%= current_fork['fork_of']['id'] %></a>
-          <% fork_content = [ current_fork['files'] ].flatten(1)[0].flatten(1)[1]['content'] %>
-          <pre class="fork"><%= fork_content %></pre>
-          <div id="fork-sheet"></div>
-        <% end %>
-      </div>
+    <div style="float: left; width: 800px;">
+    <img src='https://gravatar.com/avatar/<%= env['warden'].user.gravatar_id %>.png?r=PG&s=50' />
+    <b><%= env['warden'].user[0]['login'] %></b> - <%= @gist['description'] %> <br />
+    <% for f in [ @gist['files'] ].flatten(1) %>
+      <% base_content = f.first[1]['content'] %>
+      <pre id="gist"><%= base_content %></pre> <br />
+      <div id="midi"></div>
+      <div id="sheet"></div>
+    </div>
+    <% end %>
+    <div style="float: right; width: 800px;">
+    <% for u in @gist['forks'] %>
+      <img src="<%= u['user']['avatar_url'] %>" width="50" />
+      <b><%= u['user']['login'] %></b>
+      <% current_fork = github_request("gists/#{u['id']}") %>
+      <% fork_content = [ current_fork['files'] ].flatten(1)[0].flatten(1)[1]['content'] %>
+      <% #diff_line = Differ.diff_by_line(base_content, fork_content) %>
+      <pre class="fork"><%= fork_content %></pre>
+      <div id="fork-sheet"></div>
+    <% end %>
+    </div>
+    <hr />
+    <!-- <%= @gist %> -->
   </body>
 </html>
